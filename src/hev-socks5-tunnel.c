@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <signal.h>
 #include <string.h>
+#include <stdio.h>
 #include <sys/ioctl.h>
 
 #include <lwip/tcp.h>
@@ -345,6 +346,11 @@ lwip_timer_task_entry (void *data)
 #endif
         }
         hev_task_mutex_unlock (&mutex);
+
+        if ((i & 3) == 0) {
+            fprintf (stdout, "STATS:%zu:%zu\n", stat_tx_bytes, stat_rx_bytes);
+            fflush (stdout);
+        }
 
         if (hev_list_first (&session_set))
             hev_task_sleep (TCP_TMR_INTERVAL);
@@ -690,7 +696,7 @@ hev_socks5_tunnel_run (void)
 void
 hev_socks5_tunnel_stop (void)
 {
-    int res = 0;
+    int res;
     int fd;
 
     LOG_D ("socks5 tunnel stop");

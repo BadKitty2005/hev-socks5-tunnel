@@ -1,0 +1,36 @@
+name: Build Windows
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MSYS
+          update: true
+          install: >-
+            base-devel
+            gcc
+
+      - name: Build
+        shell: msys2 {0}
+        run: |
+          cd /d/a/hev-socks5-tunnel/hev-socks5-tunnel
+          make
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hev-socks5-tunnel-windows
+          path: bin/hev-socks5-tunnel.exe
