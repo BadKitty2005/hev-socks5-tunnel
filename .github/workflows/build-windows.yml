@@ -29,8 +29,14 @@ jobs:
           cd /d/a/hev-socks5-tunnel/hev-socks5-tunnel
           make
 
+      - name: Copy msys runtime
+        shell: msys2 {0}
+        run: cp /usr/bin/msys-2.0.dll /d/a/hev-socks5-tunnel/hev-socks5-tunnel/bin/
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: hev-socks5-tunnel-windows
-          path: bin/hev-socks5-tunnel.exe
+          path: |
+            bin/hev-socks5-tunnel.exe
+            bin/msys-2.0.dll
